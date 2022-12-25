@@ -12,15 +12,23 @@
     "@types/react-dom": "^18.0.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.6.1",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch:sass": "node-sass src/styles/sass/main.scss src/styles/css/style.css -w",
+    "compile:sass": "node-sass src/styles/sass/main.scss src/styles/css/style.comp.css",
+    "concat:css": "concat -o src/styles/css/style.concat.css src/styles/css/style.comp.css",
+    "prefix:css": "postcss --user autoprefixer -b 'last 10 versions' src/styles/css/style.concat.css -o src/styles/css/style.prefix.css",
+    "compress:css": "node-sass src/styles/css/style.prefix.css src/styles/css/style.css --output-style compressed",
+    "build:css": "npm-run-all compile:sass concat:css prefix:css compress:css",
+    "start": "npm-run-all --parallel dev watch:sass"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +47,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.13",
+    "concat": "^1.0.3",
+    "node-sass": "^7.0.3",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^10.1.0"
   }
 }
