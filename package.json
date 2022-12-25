@@ -1,0 +1,25 @@
+{
+  "name": "abc-book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "npm run dev --prefix app-backend",
+    "client": "npm start --prefix app-frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohdSaifulM/abc-book.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MohdSaifulM/abc-book/issues"
+  },
+  "homepage": "https://github.com/MohdSaifulM/abc-book#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
