@@ -2,9 +2,9 @@ import FormGroup from "../components/FormGroup";
 
 const Login = () => {
     return (
-        <section className="section-login">
+        <section className="section-form-login-register">
             <form className="form">
-                <h1 className="heading-primary heading-form">Login</h1>
+                <h1 className="heading-primary heading-form heading-login">Login</h1>
 
                 <FormGroup type="email" placeholder="Email" label="Email Address" />
 

@@ -1,4 +1,4 @@
-.section-login {
+.section-form-login-register {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,7 +10,14 @@
 .heading-form {
     align-self: center;
     position: absolute;
-    top: 7rem;
+}
+
+.heading-login {
+    top: 5rem;
+}
+
+.heading-register {
+    top: 2rem;
 }
 
 .btn-form {

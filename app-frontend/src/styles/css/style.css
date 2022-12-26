@@ -7,6 +7,7 @@
   width: 30%;
   height: 53rem;
   padding: 4rem;
+  padding-top: 10rem;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 1.6rem;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -141,7 +142,7 @@ body {
 .paragraph {
   font-size: 1.6rem; }
 
-.section-login {
+.section-form-login-register {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,8 +152,13 @@ body {
 
 .heading-form {
   align-self: center;
-  position: absolute;
-  top: 7rem; }
+  position: absolute; }
+
+.heading-login {
+  top: 5rem; }
+
+.heading-register {
+  top: 2rem; }
 
 .btn-form {
   flex-grow: 1; }
