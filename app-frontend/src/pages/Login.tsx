@@ -4,13 +4,15 @@ const Login = () => {
     return (
         <section className="section-login">
             <form className="form">
-                <h1 className="heading-primary">Login</h1>
+                <h1 className="heading-primary heading-form">Login</h1>
 
                 <FormGroup type="email" placeholder="Email" label="Email Address" />
 
                 <FormGroup type="password" placeholder="Password" label="Password" />
 
                 <FormGroup type="button" label="Login" />
+
+                <p className="paragraph">Not a member yet? Click <a className="btn-text" href="/register">here</a> to register</p>
                 
             </form>
         </section>

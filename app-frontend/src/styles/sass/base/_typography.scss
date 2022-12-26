@@ -4,3 +4,13 @@ body {
 	line-height: 1.7;
 	color: $color-grey-dark;
 }
+
+.heading-primary {
+	color: inherit;
+	text-transform: uppercase;
+	font-size: 3rem;
+}
+
+.paragraph {
+	font-size: $default-font-size;
+}

@@ -4,4 +4,15 @@
     justify-content: center;
     flex-direction: column;
     height: 100vh;
+    background: linear-gradient(60deg, $color-secondary 0%, $color-primary 100%);
+}
+
+.heading-form {
+    align-self: center;
+    position: absolute;
+    top: 7rem;
+}
+
+.btn-form {
+    flex-grow: 1;
 }
