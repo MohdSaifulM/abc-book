@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Genre;
+(function (Genre) {
+    Genre["action_and_adventure"] = "action_and_adventure";
+    Genre["art_architecture"] = "art_architecture";
+    Genre["alternate_history"] = "alternate_history";
+    Genre["autobiography"] = "autobiography";
+    Genre["biography"] = "biography";
+    Genre["business_economics"] = "business_economics";
+    Genre["children"] = "children";
+    Genre["comicbook"] = "comicbook";
+    Genre["fantasy"] = "fantasy";
+    Genre["history"] = "history";
+    Genre["humor"] = "humor";
+    Genre["horror"] = "horror";
+    Genre["philosophy"] = "philosophy";
+    Genre["poetry"] = "poetry";
+    Genre["religion"] = "religion";
+    Genre["romance"] = "romance";
+    Genre["science_fiction"] = "science_fiction";
+    Genre["self_help"] = "self_help";
+    Genre["thriller"] = "thriller";
+    Genre["young_adult"] = "young_adult";
+    Genre["true_crime"] = "true_crime";
+})(Genre || (Genre = {}));
