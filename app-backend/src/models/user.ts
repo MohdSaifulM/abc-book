@@ -3,8 +3,6 @@ import { UserType, UserModel } from '../types/userTypes';
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 
-
-
 const userSchema = new Schema({
     name : {
         type: String,
@@ -54,6 +52,30 @@ userSchema.statics.register = async function( name: string, email: string, passw
     const date_joined = new Date();
     
     const hash = await bcrypt.hash(password, 12);
+    const user = await this.create({ name, email, password: hash, date_joined });
+
+    return user;
+}
+
+userSchema.statics.createUser = async function( name: string, email: string) {
+    if (!name || !email) {
+        throw Error('All fields must be filled');
+    }
+    if (!validator.isEmail(email)) {
+        throw Error('Email is not valid');
+    }
+
+    const exists = await this.findOne({ email });
+
+    if(exists) {
+        throw Error('email already taken');
+    }
+
+    const date_joined = new Date();
+
+    const defaultPass = 'Pass@123';
+    
+    const hash = await bcrypt.hash(defaultPass, 12);
     const user = await this.create({ name, email, password: hash, date_joined });
 
     return user;

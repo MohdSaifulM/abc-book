@@ -6,8 +6,8 @@ import userRoutes from './routes/userRoutes';
 
 
 const app: Application = express();
-const PORT: number = 5000;
-const uri = 'mongodb://localhost:27017/abc';
+const PORT: number = 5000;  //! Should be placed in environment variables
+const uri = 'mongodb://localhost:27017/abc';  //! Should be placed in environment variables
 
 //?===========Middleware==========
 app.use(express.json());

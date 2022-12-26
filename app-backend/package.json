@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
+    "seed:user": "node dist/seed.js",
     "build": "tsc -p ."
   },
   "keywords": [],
