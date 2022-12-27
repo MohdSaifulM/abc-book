@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 enum Genre {
     action_and_adventure = 'action_and_adventure', 
@@ -31,6 +31,6 @@ export interface BookType extends Document {
     genre: Genre,
     year_published: string,
     borrowing_availability_status: boolean,
-    last_borrower: string,
+    last_borrower: Types.ObjectId,
     quantity: number
 }

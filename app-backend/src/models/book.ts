@@ -51,7 +51,8 @@ const bookSchema: Schema = new Schema({
         required: true,
     },
     last_borrower: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
     quantity: {
         type: Number
