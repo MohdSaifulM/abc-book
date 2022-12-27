@@ -55,7 +55,8 @@ const bookSchema: Schema = new Schema({
         ref: 'User'
     },
     quantity: {
-        type: Number
+        type: Number,
+        required: true
     },
 });
 
