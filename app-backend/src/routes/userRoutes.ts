@@ -11,12 +11,12 @@ userRoutes.post('/login', login);
 userRoutes.post('/register', register);
 
 //?===========Protected Routes - Needs to be at least Editor===========
-userRoutes.get('/getAllUsers', authenticationCheck, editorAuthorizationCheck, getAllUsers);
+userRoutes.get('/all', authenticationCheck, editorAuthorizationCheck, getAllUsers);
 
 userRoutes.get('/:id', authenticationCheck, editorAuthorizationCheck, getUser);
 
 //?===========Protected Routes - Needs to be Admin===========
-userRoutes.post('/createUser', authenticationCheck, adminAuthorizationCheck, createUser);
+userRoutes.post('/create', authenticationCheck, adminAuthorizationCheck, createUser);
 
 userRoutes.delete('/delete/:id', authenticationCheck, adminAuthorizationCheck, deleteUser);
 
