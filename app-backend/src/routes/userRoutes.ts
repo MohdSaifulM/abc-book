@@ -1,20 +1,25 @@
 import { Router } from "express";
+import { authenticationCheck } from "../middleware/authenticationCheck";
+import { adminAuthorizationCheck, editorAuthorizationCheck } from "../middleware/authorizationCheck";
 import { getAllUsers, login, register, createUser, getUser, deleteUser, updateUser } from '../controllers/userController';
 
 const userRoutes: Router = Router();
 
+//?===========Unprotected Routes===========
 userRoutes.post('/login', login);
 
 userRoutes.post('/register', register);
 
-userRoutes.post('/createUser', createUser);
+//?===========Protected Routes - Needs to be at least Editor===========
+userRoutes.get('/getAllUsers', authenticationCheck, editorAuthorizationCheck, getAllUsers);
 
-userRoutes.get('/getAllUsers', getAllUsers);
+userRoutes.get('/:id', authenticationCheck, editorAuthorizationCheck, getUser);
 
-userRoutes.get('/:id', getUser);
+//?===========Protected Routes - Needs to be Admin===========
+userRoutes.post('/createUser', authenticationCheck, adminAuthorizationCheck, createUser);
 
-userRoutes.delete('/delete/:id', deleteUser);
+userRoutes.delete('/delete/:id', authenticationCheck, adminAuthorizationCheck, deleteUser);
 
-userRoutes.put('/update/:id', updateUser);
+userRoutes.put('/update/:id', authenticationCheck, adminAuthorizationCheck, updateUser);
 
 export default userRoutes;

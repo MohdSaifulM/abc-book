@@ -29,6 +29,7 @@ const userSchema = new Schema({
     }
 });
 
+//?===========User Static Methods===========
 userSchema.statics.register = async function( name: string, email: string, password: string, confirmPassword: string) {
     if (!name || !email || !password || !confirmPassword) {
         throw Error('All fields must be filled');
