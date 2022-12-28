@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 //?===========Import Routes=======
 import userRoutes from './routes/userRoutes';
 import bookRoutes from './routes/bookRoutes';
+import requestRoutes from './routes/requestRoutes';
 
 
 const app: Application = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 //?===========Routes==============
 app.use('/api/user', userRoutes);
 app.use('/api/book', authenticationCheck, bookRoutes);
+app.use('/api/request', authenticationCheck, adminAuthorizationCheck, requestRoutes);
 
 app.all('*', (req, res, next) => {
   res.send('404!');

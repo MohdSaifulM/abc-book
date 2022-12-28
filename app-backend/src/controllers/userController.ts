@@ -48,8 +48,6 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
         },
     });
     res.status(200).json("Request has been successfully added");
-    // const user: UserType = await User.createUser(name, email);
-    // res.status(200).json({ user });
 });
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
@@ -78,8 +76,6 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
         },
     });
     res.status(200).json("Request has been successfully added");
-    // await User.findByIdAndDelete(id);
-    // res.status(200).json(`Successfully deleted user :: ${id}`);
 });
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
@@ -101,14 +97,6 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
         },
     });
     res.status(200).json("Request has been successfully added");
-    // const updatedUser: UserType | null = await User.findByIdAndUpdate(
-    //     id,
-    //     {
-    //         $set: payload,
-    //     },
-    //     { returnOriginal: false }
-    // );
-    // res.status(200).json(updatedUser);
 });
 
 const updatePassword = catchAsync(async (req: Request, res: Response) => {

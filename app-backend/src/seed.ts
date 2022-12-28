@@ -159,7 +159,6 @@ let books = [
         genre: "romance",
         year_published: "2023-01-01",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -170,7 +169,6 @@ let books = [
         genre: "thriller",
         year_published: "2023-01-01",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -181,7 +179,6 @@ let books = [
         genre: "horror",
         year_published: "2023-01-01",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -192,7 +189,6 @@ let books = [
         genre: "science_fiction",
         year_published: "2023-01-01",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -203,7 +199,6 @@ let books = [
         genre: "romance",
         year_published: "2022-03-06",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -214,7 +209,6 @@ let books = [
         genre: "thriller",
         year_published: "2022-02-06",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -225,7 +219,6 @@ let books = [
         genre: "history",
         year_published: "2022-02-06",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -236,7 +229,6 @@ let books = [
         genre: "history",
         year_published: "2022-02-06",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -247,7 +239,6 @@ let books = [
         genre: "thriller",
         year_published: "2021-12-05",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
     {
@@ -258,7 +249,6 @@ let books = [
         genre: "action_and_adventure",
         year_published: "2021-12-05",
         borrowing_availability_status: true,
-        last_borrower: "",
         quantity: getRandomInt(),
     },
 ];
