@@ -1,11 +1,9 @@
 import mongoose, { Types } from "mongoose";
 import { Request, Response } from "express";
 import { BookType } from "../types/bookTypes";
-import { UserType } from "../types/userTypes";
 import { BorrowType } from "../types/borrowType";
 import { catchAsync } from "../middleware/catchAsync";
 import Book from "../models/book";
-import User from "../models/user";
 import Borrow from "../models/borrow";
 
 const jwt = require("jsonwebtoken");
