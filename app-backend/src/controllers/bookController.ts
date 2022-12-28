@@ -222,10 +222,37 @@ const borrowBook = catchAsync(async (req: Request, res: Response) => {
 
 const returnBook = catchAsync(async (req: Request, res: Response) => {
     // Fetch book
-    // Fetch user
-    // Find within borrow_history array => user && !isReturned
+    const { id } = req.params;
+    const book: BookType | null = await fetchBook(id);
+    // Return message if unable to find book
+    if (!book) return res.status(200).json('Unable to find book that matches query');
+    // Fetch user id
+    const userToken: string | undefined = req.get("Authorization");
+    const userId = fetchUserId(userToken);
     // Find and update borrow
+    const borrow: BorrowType | null = await Borrow.findOneAndUpdate({
+        book_id: book._id,
+        user_id: userId,
+        isReturned: false
+    }, {
+        isReturned: true
+    }, { returnOriginal: false });
     // Update book quantity and borrowing_availability_status
+    if (borrow && borrow.isReturned) {
+        const updatedQuantity = book.quantity + 1;
+        const payload = {
+            quantity: updatedQuantity,
+            borrowing_availability_status: updatedQuantity ? true : false,
+        };
+        const updatedBook = await Book.findByIdAndUpdate(id, payload, {
+            returnOriginal: false,
+        });
+        // Return updated book
+        res.status(200).json(updatedBook);
+    } else {
+        // Return message that not available to find borrow record
+        res.status(200).json('Unable to find borrow record for book');
+    }
 });
 
 export {
@@ -235,5 +262,5 @@ export {
     updateBook,
     deleteBook,
     borrowBook,
-    returnBook,
+    returnBook
 };
