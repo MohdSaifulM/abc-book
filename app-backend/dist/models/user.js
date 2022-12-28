@@ -37,6 +37,7 @@ const userSchema = new mongoose_1.Schema({
         required: true
     }
 });
+//?===========User Static Methods===========
 userSchema.statics.register = function (name, email, password, confirmPassword) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!name || !email || !password || !confirmPassword) {
@@ -93,6 +94,22 @@ userSchema.statics.login = function (email, password) {
         if (!isValid) {
             throw Error('Incorrect password');
         }
+        return user;
+    });
+};
+userSchema.statics.updatePassword = function (password, confirmPassword, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!confirmPassword || !password) {
+            throw Error('All fields must be filled');
+        }
+        if (password !== confirmPassword) {
+            throw Error('Passwords must match!');
+        }
+        if (!validator.isStrongPassword(password)) {
+            throw Error('Password is not strong enough');
+        }
+        const hash = yield bcrypt.hash(password, 12);
+        const user = yield this.findByIdAndUpdate(userId, { password: hash });
         return user;
     });
 };

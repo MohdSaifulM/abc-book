@@ -51,10 +51,17 @@ const bookSchema = new mongoose_1.Schema({
         required: true,
     },
     last_borrower: {
-        type: String
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    borrow_history: {
+        type: [mongoose_1.Schema.Types.ObjectId],
+        ref: 'Borrow',
+        default: []
     },
     quantity: {
-        type: Number
-    },
+        type: Number,
+        required: true
+    }
 });
 exports.default = (0, mongoose_1.model)("Book", bookSchema);
