@@ -54,10 +54,15 @@ const bookSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    borrow_history: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Borrow',
+        default: []
+    },
     quantity: {
         type: Number,
         required: true
-    },
+    }
 });
 
 export default model<BookType>("Book", bookSchema);

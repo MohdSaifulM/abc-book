@@ -1,11 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { Request, Response } from "express";
 import { BookType } from "../types/bookTypes";
+import { UserType } from "../types/userTypes";
+import { BorrowType } from "../types/borrowType";
 import { catchAsync } from "../middleware/catchAsync";
 import Book from "../models/book";
+import User from "../models/user";
+import Borrow from "../models/borrow";
 
+const jwt = require("jsonwebtoken");
+
+
+//?===========Aggregations===========
 // Look up last borrower from user collection for book aggregation
-const lookup = {
+const lookupLastBorrower = {
     $lookup: {
         from: "users",
         localField: "last_borrower",
@@ -13,16 +21,109 @@ const lookup = {
         as: "last_borrower",
     },
 };
+
+// Look up last borrower from user collection for book aggregation
+const lookupBorrowHistory = {
+    $lookup: {
+        from: "borrows",
+        localField: "borrow_history",
+        foreignField: "_id",
+        as: "borrow_history",
+    },
+};
+
+// Unwind to flatten borrow history array to look up for user or book from borrow history
+const unwindBorrowHistory = {
+    $unwind: {
+        path: "$borrow_history",
+        preserveNullAndEmptyArrays: true,
+    },
+};
+
+// Look up user from borrow history array
+const lookupBorrowHistoryUser = {
+    $lookup: {
+        from: "users",
+        localField: "borrow_history.user_id",
+        foreignField: "_id",
+        as: "borrow_history.user_id",
+    },
+};
+
+// Unwind borrow history user since we're returning just one user from this
+const unwindBorrowHistoryUser = {
+    $unwind: {
+        path: "$borrow_history.user_id",
+        preserveNullAndEmptyArrays: true,
+    },
+};
+
 // Unwind to flatten array since we're returning just one user
-const unwind = {
+const unwindLastBorrower = {
     $unwind: {
         path: "$last_borrower",
         preserveNullAndEmptyArrays: true,
     },
 };
 
+// Return correct book object populated with borrow history and user data
+const bookProject = {
+    $group: {
+        _id: '$_id',
+        title: {$first: '$title'},
+        description: {$first: '$description'},
+        genre: {$first: '$genre'},
+        author: {$first: '$author'},
+        year_published: {$first: '$year_published'},
+        borrowing_availability_status: {$first: '$borrowing_availability_status'},
+        last_borrower: {$first: '$last_borrower'},
+        quantity: {$first: '$quantity'},
+        borrow_history: {
+          $push: {
+            _id: '$borrow_history._id',
+            user: '$borrow_history.user_id',
+            isReturned: '$borrow_history.isReturned'
+          }
+        }
+    },
+};
+
+//?===========Local Functions===========
+// Fetch book and return borrowing_availability_status, quantity and borrow_history
+const fetchBook = async (id: string): Promise<BookType | null> => {
+    return await Book.findById(id, {
+        title: 1,
+        borrowing_availability_status: 1,
+        quantity: 1,
+        borrow_history: 1,
+    });
+};
+
+// Fetch user id
+const fetchUserId = (token: string | undefined): Types.ObjectId | boolean => {
+    // Return false if no token
+    if (!token) return false;
+    // Split bearer token to 'Bearer' string and token
+    const tokenArray: string[] = token.split(" ");
+    // Decode token and return user id
+    const userId = jwt.decode(tokenArray[1]);
+    // If not found return false
+    if (!userId) return false;
+    // Return user object id
+    return new mongoose.Types.ObjectId(userId._id);
+};
+
+//?===========Exported Functions for Routes===========
 const getAllBooks = catchAsync(async (req: Request, res: Response) => {
-    const books: BookType[] = await Book.aggregate([lookup, unwind]);
+    const books: BookType[] = await Book.aggregate([
+        lookupLastBorrower,
+        unwindLastBorrower,
+        lookupBorrowHistory,
+        unwindBorrowHistory,
+        lookupBorrowHistoryUser,
+        unwindBorrowHistoryUser,
+        bookProject
+    ]);
     res.status(200).json(books);
 });
 
@@ -33,7 +134,16 @@ const getBook = catchAsync(async (req: Request, res: Response) => {
             _id: oid,
         },
     };
-    const book: BookType[] = await Book.aggregate([query, lookup, unwind]);
+    const book: BookType[] = await Book.aggregate([
+        query,
+        lookupLastBorrower,
+        unwindLastBorrower,
+        lookupBorrowHistory,
+        unwindBorrowHistory,
+        lookupBorrowHistoryUser,
+        unwindBorrowHistoryUser,
+        bookProject
+    ]);
     res.status(200).json(book[0]);
 });
 
@@ -55,7 +165,7 @@ const createBook = catchAsync(async (req: Request, res: Response) => {
 const updateBook = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const payload = req.body;
-    
+
     // Set borrowing availability status based on quantity
     if (payload.quantity) payload.borrowing_availability_status = true;
     else payload.borrowing_availability_status = false;
@@ -76,4 +186,54 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json(`Successfully deleted book :: ${id}`);
 });
 
-export { getAllBooks, getBook, createBook, updateBook, deleteBook };
+const borrowBook = catchAsync(async (req: Request, res: Response) => {
+    // Fetch book
+    const { id } = req.params;
+    const book: BookType | null = await fetchBook(id);
+    // Fetch user id
+    const userToken: string | undefined = req.get("Authorization");
+    const userId = fetchUserId(userToken);
+    // Create borrow if quantity is > 1
+    if (book && book.borrowing_availability_status && userId) {
+        const borrow: BorrowType = await Borrow.create({
+            book_id: book._id,
+            user_id: userId,
+            isReturned: false,
+        });
+        // Update book quantity, last_borrowed, borrowing_availability_status and borrow_history
+        const updatedQuantity = book.quantity - 1;
+        book.borrow_history.push(borrow._id);
+        const payload = {
+            quantity: updatedQuantity,
+            last_borrower: userId,
+            borrowing_availability_status: updatedQuantity ? true : false,
+            borrow_history: book.borrow_history,
+        };
+        const updatedBook = await Book.findByIdAndUpdate(id, payload, {
+            returnOriginal: false,
+        });
+        // Return updated book
+        res.status(200).json(updatedBook);
+    } else {
+        // Return message that book is not available for borrow
+        res.status(200).json(`${book && book.title ? book.title : "Book"} is not available for borrow`);
+    }
+});
+
+const returnBook = catchAsync(async (req: Request, res: Response) => {
+    // Fetch book
+    // Fetch user
+    // Find within borrow_history array => user && !isReturned
+    // Find and update borrow
+    // Update book quantity and borrowing_availability_status
+});
+
+export {
+    getAllBooks,
+    getBook,
+    createBook,
+    updateBook,
+    deleteBook,
+    borrowBook,
+    returnBook,
+};

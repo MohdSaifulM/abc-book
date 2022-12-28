@@ -32,5 +32,6 @@ export interface BookType extends Document {
     year_published: string,
     borrowing_availability_status: boolean,
     last_borrower: Types.ObjectId,
+    borrow_history: Types.ObjectId[],
     quantity: number
 }
