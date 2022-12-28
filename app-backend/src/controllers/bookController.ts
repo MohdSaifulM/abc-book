@@ -1,8 +1,9 @@
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { BookType } from "../types/bookTypes";
-import { BorrowType } from "../types/borrowType";
+import { BorrowType } from "../types/borrowTypes";
 import { catchAsync } from "../middleware/catchAsync";
+import { fetchUserId } from "../utils/fetchUserId";
 import Book from "../models/book";
 import Borrow from "../models/borrow";
 
@@ -95,20 +96,6 @@ const fetchBook = async (id: string): Promise<BookType | null> => {
         quantity: 1,
         borrow_history: 1,
     });
-};
-
-// Fetch user id
-const fetchUserId = (token: string | undefined): Types.ObjectId | boolean => {
-    // Return false if no token
-    if (!token) return false;
-    // Split bearer token to 'Bearer' string and token
-    const tokenArray: string[] = token.split(" ");
-    // Decode token and return user id
-    const userId = jwt.decode(tokenArray[1]);
-    // If not found return false
-    if (!userId) return false;
-    // Return user object id
-    return new mongoose.Types.ObjectId(userId._id);
 };
 
 //?===========Exported Functions for Routes===========

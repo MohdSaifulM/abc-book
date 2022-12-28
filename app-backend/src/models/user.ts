@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 import { UserType, UserModel } from '../types/userTypes';
 const validator = require('validator');
 const bcrypt = require('bcrypt');
@@ -97,6 +97,25 @@ userSchema.statics.login = async function(email: string, password: string) {
     if (!isValid) {
         throw Error('Incorrect password');
     }
+
+    return user;
+}
+
+userSchema.statics.updatePassword = async function(password: string, confirmPassword: string, userId: Types.ObjectId) {
+    if (!confirmPassword || !password) {
+        throw Error('All fields must be filled');
+    }
+    
+    if (password !== confirmPassword) {
+        throw Error('Passwords must match!');
+    }
+
+    if (!validator.isStrongPassword(password)) {
+        throw Error('Password is not strong enough');
+    }
+    
+    const hash = await bcrypt.hash(password, 12);
+    const user = await this.findByIdAndUpdate(userId, { password: hash });
 
     return user;
 }

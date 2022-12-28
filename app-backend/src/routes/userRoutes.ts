@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticationCheck } from "../middleware/authenticationCheck";
 import { adminAuthorizationCheck, editorAuthorizationCheck } from "../middleware/authorizationCheck";
-import { getAllUsers, login, register, createUser, getUser, deleteUser, updateUser } from '../controllers/userController';
+import { getAllUsers, login, register, createUser, getUser, deleteUser, updateUser, updatePassword } from '../controllers/userController';
 
 const userRoutes: Router = Router();
 
@@ -9,6 +9,9 @@ const userRoutes: Router = Router();
 userRoutes.post('/login', login);
 
 userRoutes.post('/register', register);
+
+//?===========Protected Routes - Needs to be authenticated===========
+userRoutes.put('/update-password', authenticationCheck, updatePassword);
 
 //?===========Protected Routes - Needs to be at least Editor===========
 userRoutes.get('/all', authenticationCheck, editorAuthorizationCheck, getAllUsers);

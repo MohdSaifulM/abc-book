@@ -1,4 +1,4 @@
-import { BorrowType } from "../types/borrowType";
+import { BorrowType } from "../types/borrowTypes";
 import { model, Schema } from "mongoose";
 
 const borrowSchema: Schema = new Schema(

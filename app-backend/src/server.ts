@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import { authenticationCheck } from './middleware/authenticationCheck';
+import { adminAuthorizationCheck } from './middleware/authorizationCheck';
 import mongoose from 'mongoose';
 
 //?===========Import Routes=======
@@ -24,7 +25,7 @@ app.all('*', (req, res, next) => {
 
 app.use((err: any | unknown, req: Request, res: Response, next: NextFunction) => {
   const { status = 500 } = err;
-  res.status(status).send(`500 Internal Server Error :: ${err.message}`);
+  res.status(status).send(err.message);
 });
 
 //?===========Connect=============

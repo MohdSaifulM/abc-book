@@ -1,6 +1,9 @@
+import mongoose from "mongoose";
 import { Response, Request } from "express";
 import { UserType } from "../types/userTypes";
 import User from "../models/user";
+import request from "../models/request";
+import { fetchUserId } from "../utils/fetchUserId";
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -31,8 +34,22 @@ const register = catchAsync(async (req: Request, res: Response) => {
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
     const { name, email } = req.body;
-    const user: UserType = await User.createUser(name, email);
-    res.status(200).json({ user });
+    // Fetch user id
+    const userToken: string | undefined = req.get("Authorization");
+    const userId = fetchUserId(userToken);
+    // Save request with payload
+    await request.create({
+        requestedBy: userId,
+        isApproved: false,
+        action: "add",
+        payload: {
+            name,
+            email,
+        },
+    });
+    res.status(200).json("Request has been successfully added");
+    // const user: UserType = await User.createUser(name, email);
+    // res.status(200).json({ user });
 });
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
@@ -48,8 +65,21 @@ const getUser = catchAsync(async (req: Request, res: Response) => {
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    await User.findByIdAndDelete(id);
-    res.status(200).json(`Successfully deleted user :: ${id}`);
+    // Fetch user id
+    const userToken: string | undefined = req.get("Authorization");
+    const userId = fetchUserId(userToken);
+    // Save request with payload
+    await request.create({
+        requestedBy: userId,
+        isApproved: false,
+        action: "remove",
+        payload: {
+            _id: new mongoose.Types.ObjectId(id),
+        },
+    });
+    res.status(200).json("Request has been successfully added");
+    // await User.findByIdAndDelete(id);
+    // res.status(200).json(`Successfully deleted user :: ${id}`);
 });
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
@@ -57,14 +87,37 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
     if (payload.password)
         payload.password = await bcrypt.hash(payload.password, 12);
-    const updatedUser: UserType | null = await User.findByIdAndUpdate(
-        id,
-        {
-            $set: payload,
+    // Fetch user id
+    const userToken: string | undefined = req.get("Authorization");
+    const userId = fetchUserId(userToken);
+    // Save request with payload
+    await request.create({
+        requestedBy: userId,
+        isApproved: false,
+        action: "update",
+        payload: {
+            ...payload,
+            _id: new mongoose.Types.ObjectId(id),
         },
-        { returnOriginal: false }
-    );
-    res.status(200).json(updatedUser);
+    });
+    res.status(200).json("Request has been successfully added");
+    // const updatedUser: UserType | null = await User.findByIdAndUpdate(
+    //     id,
+    //     {
+    //         $set: payload,
+    //     },
+    //     { returnOriginal: false }
+    // );
+    // res.status(200).json(updatedUser);
+});
+
+const updatePassword = catchAsync(async (req: Request, res: Response) => {
+    const { password, confirmPassword } = req.body;
+    const userToken: string | undefined = req.get("Authorization");
+    const userId = fetchUserId(userToken);
+    if (!userId || typeof userId === 'boolean') return res.status(500).json('Something went wrong');
+    await User.updatePassword(password, confirmPassword, userId);
+    res.status(200).json('Successfully updated password!');
 });
 
 export {
@@ -75,4 +128,5 @@ export {
     getUser,
     deleteUser,
     updateUser,
+    updatePassword,
 };
