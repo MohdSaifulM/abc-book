@@ -21,8 +21,8 @@ userRoutes.get('/:id', authenticationCheck, editorAuthorizationCheck, getUser);
 //?===========Protected Routes - Needs to be Admin===========
 userRoutes.post('/create', authenticationCheck, adminAuthorizationCheck, createUser);
 
-userRoutes.delete('/delete/:id', authenticationCheck, adminAuthorizationCheck, deleteUser);
+userRoutes.post('/delete/:id', authenticationCheck, adminAuthorizationCheck, deleteUser);
 
-userRoutes.put('/update/:id', authenticationCheck, adminAuthorizationCheck, updateUser);
+userRoutes.post('/update/:id', authenticationCheck, adminAuthorizationCheck, updateUser);
 
 export default userRoutes;

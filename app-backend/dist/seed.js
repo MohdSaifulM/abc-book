@@ -151,6 +151,13 @@ let users = [
         role: "admin",
     },
     {
+        name: "Saif",
+        email: "saif@abc.com",
+        date_joined,
+        password: "",
+        role: "admin",
+    },
+    {
         name: "Editor",
         email: "editor@abc.com",
         date_joined,
